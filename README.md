@@ -35,8 +35,10 @@ sails generate page articles
 ``
 
 
+# Generate new model
 
-Generate model Uppercase singular
+Generate model Uppercase singular go to api/models/_modelname_.js to edit the model:
+
 ``
 sails generate model Article
 ``

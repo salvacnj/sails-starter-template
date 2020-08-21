@@ -1,4 +1,9 @@
 {
-  "Welcome": "Bienvenido",
-  "A brand new app.": "Una nueva aplicación."
+	"Welcome": "Bienvenido",
+	"A brand new app.": "Una nueva aplicación.",
+	"Database": "Database",
+	"Articles": "Articles",
+	"Base de datos": "Base de datos",
+	"Artículos": "Artículos",
+	"Nueva entrada": "Nueva entrada"
 }

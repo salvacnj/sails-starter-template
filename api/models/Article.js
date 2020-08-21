@@ -21,6 +21,20 @@ module.exports = {
       maxLength: 200,
       example: 'mary.sue@example.com'
     },
+    nameOnMenu: {
+      type: 'string'
+    },
+    price: {
+      type: 'string'
+    },
+    percentRealMeat: {
+      type: 'number',
+      defaultsTo: 20,
+      columnType: 'FLOAT'
+    },
+    numCalories: {
+      type: 'number'
+    }
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
     //  ║╣ ║║║╠╩╗║╣  ║║╚═╗
@@ -34,4 +48,3 @@ module.exports = {
   },
 
 };
-
