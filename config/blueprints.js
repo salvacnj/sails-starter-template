@@ -17,7 +17,7 @@ module.exports.blueprints = {
   *                                                                          *
   ***************************************************************************/
 
-  // actions: false,
+  actions: true,
 
 
   /***************************************************************************
@@ -37,7 +37,8 @@ module.exports.blueprints = {
   ***************************************************************************/
 
   shortcuts: false,
-  pluralize: true,
-  restPrefix: '/api',
+  //pluralize: true,
+  //prefix: '/api/v1'
+  //restPrefix: '/api',
 
 };

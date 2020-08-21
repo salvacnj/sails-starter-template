@@ -32,7 +32,7 @@ module.exports.datastores = {
   *                                                                          *
   ***************************************************************************/
 
-  default: {
+  mysql: {
 
     /***************************************************************************
     *                                                                          *
@@ -51,7 +51,7 @@ module.exports.datastores = {
     adapter: 'sails-mysql',
     url: 'mysql://localhost:3306/sails',
   },
-  mongo: {
+  default: {
     adapter: require('sails-mongo'),
     url: 'mongodb://127.0.0.1:27017/sails',
   }
