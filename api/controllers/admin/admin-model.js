@@ -1,24 +1,27 @@
 module.exports = {
 
 
-  friendlyName: 'View articles',
+  friendlyName: 'Admin model',
 
 
-  description: 'Display "Articles" page.',
+  description: '',
+
+
+  inputs: {
+
+  },
 
 
   exits: {
 
-    success: {
-      responseType: 'view',
-      viewTemplatePath: 'pages/articles'
-    }
-
   },
 
-  fn: async function () {
 
-    const model = 'article'
+  fn: async function (inputs) {
+    const model = this.req.param('model');
+    //console.log(sails.models.user.count());
+
+
     const total = await Article.count()
     const all = await Article.find({
       limit: 25

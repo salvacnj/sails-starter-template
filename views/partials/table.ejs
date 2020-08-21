@@ -1,10 +1,11 @@
 <h1 class="title is-capitalized"><%= model %></h1>
-<h2 class="subtitle">Total entries: <%= total %></h2>
 
 <!-- Button trigger modal -->
-<button type="button" class="btn btn-sm btn-outline-info " data-toggle="modal" data-target="#exampleModalLong">
+<button type="button" class="btn btn-sm btn-outline-info" data-toggle="modal" data-target="#exampleModalLong">
   <%= __('Nueva entrada') %>
 </button>
+
+<js-timestamp :at="1598013627260"></js-timestamp>
 
 <div class="table-container">
   <table class="table is-hoverable is-fullwidth is-narrow">
@@ -20,7 +21,7 @@
     <tbody>
       <% all.forEach((item, index) => { %>
       <tr class="is-relative">
-        <% for (let prop in item) { %>
+        <% for (let prop in item) {%>
         <td><%= item[prop] %></td>
         <% } %>
 
@@ -34,6 +35,7 @@
   </table>
 </div>
 
+<h2 class="subtitle"><%= __('Número de entradas') %> <%= total %></h2>
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
@@ -41,7 +43,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+        <h5 class="modal-title" id="exampleModalLongTitle"><%= __(`Crear ${model}`) %></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -76,13 +78,12 @@
                 <% if (attribute.model) { %>
                 <div class="dropdown autocomplete" data-model="<%= attribute.model %>">
                   <div class="dropdown-trigger">
-                    <input name="<%= name %>" class="input" type="text" placeholder="" aria-haspopup="true">
+                    <input name="<%= name %>" class="input" type="text" placeholder="" aria-haspopup="true" />
                   </div>
                   <div class="dropdown-menu" role="menu"></div>
                 </div>
-                <% } else { %>
-                <input class="<%= klass %>" type="<%= type %>" name="<%= name %>" <%= disabled ? 'disabled' : '' %>>
-                <% } %>
+                <% } else { %> <input class="<%= klass %>" type="<%= type %>" name="<%= name %>"
+                  <%= disabled ? 'disabled' : '' %>> <% } %>
               </div>
               <p class="help"><%= attribute.required ? 'Required' : '' %></p>
             </div>
@@ -91,8 +92,6 @@
         <% } %>
       </div>
       <div class="modal-footer">
-        <ajax-button type="submit" class="btn btn-dark">Save changes</ajax-button>
-
         <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-outline-info" onclick="save(event)">Save changes</button>
       </div>
@@ -100,39 +99,37 @@
   </div>
 </div>
 
-
-
 <script>
-  const editModal = document.querySelector('#modal-edit')
-  const model = '<%= model %>'
+  const editModal = document.querySelector('#modal-edit');
+  const model = '<%= model %>';
 
   function openEditModal(itemIndex) {
-    editModal.classList.add('is-active')
+    editModal.classList.add('is-active');
 
-    const item = itemIndex !== undefined ? SAILS_LOCALS.all[itemIndex] : null
+    const item = itemIndex !== undefined ? SAILS_LOCALS.all[itemIndex] : null;
     for (let attribute in SAILS_LOCALS.attributes) {
-      const input = document.querySelector(`#attribute-${attribute} input`)
+      const input = document.querySelector(`#attribute-${attribute} input`);
 
       if (!input) {
-        continue
+        continue;
       }
 
       if (input.type === 'checkbox') {
-        input.checked = item ? item[attribute] : false
+        input.checked = item ? item[attribute] : false;
       } else {
-        input.value = item ? item[attribute] : ''
+        input.value = item ? item[attribute] : '';
       }
     }
 
     for (let autocomplete of document.querySelectorAll('.autocomplete')) {
       bulmahead(autocomplete.querySelector('input'), autocomplete.querySelector('.dropdown-menu'), v => {
         return fetch(`/${autocomplete.dataset.model}?where={"name":{"contains":"${v}"}}&populate=false`)
-          .then((response) => {
+          .then(response => {
             if (!response.ok) {
-              throw Error(response.statusText)
+              throw Error(response.statusText);
             }
 
-            return response.json()
+            return response.json();
           })
           .then(json => {
             return json.map(({
@@ -141,94 +138,94 @@
             }) => {
               return {
                 label: name,
-                value: id
-              }
-            })
+                value: id,
+              };
+            });
           })
-          .catch((e) => {
-            console.error('Can\'t search in autocomplete', e)
-          })
-      })
+          .catch(e => {
+            console.error("Can't search in autocomplete", e);
+          });
+      });
     }
   }
 
   function save(event) {
-    event.target.classList.add('is-loading')
-    event.target.disabled = true
+    event.target.classList.add('is-loading');
+    event.target.disabled = true;
 
     let data = {
-      _csrf: window.SAILS_LOCALS._csrf
-    }
+      _csrf: window.SAILS_LOCALS._csrf,
+    };
     document.querySelectorAll('#modal-edit input').forEach(input => {
       if (input.disabled) {
-        return true
+        return true;
       }
 
-      let value
+      let value;
       if (input.type === 'number') {
-        value = parseInt(input.value) || 0
+        value = parseInt(input.value) || 0;
       } else if (input.type === 'checkbox') {
-        value = input.checked
+        value = input.checked;
       } else {
-        value = input.value
+        value = input.value;
       }
 
-      data[input.getAttribute('name')] = value
-    })
+      data[input.getAttribute('name')] = value;
+    });
 
-    const id = document.querySelector('#modal-edit input[name="id"]').value
+    const id = document.querySelector('#modal-edit input[name="id"]').value;
 
     fetch(`/${model}/${id}`, {
         method: id ? 'PATCH' : 'POST',
         headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/json'
+          Accept: 'application/json, text/plain, */*',
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       })
       .then(response => {
         if (!response.ok) {
-          throw new Error()
+          throw new Error();
         }
-        notify('Model successfully saved')
+        notify('Model successfully saved');
       })
       .catch(err => {
-        notify('Can\'t save model', false)
+        notify("Can't save model", false);
       })
       .then(() => {
-        event.target.classList.remove('is-loading')
-        event.target.disabled = false
-        closeEditModal()
-      })
+        event.target.classList.remove('is-loading');
+        event.target.disabled = false;
+        closeEditModal();
+      });
   }
 
   function destroy(event, itemIndex) {
-    const item = SAILS_LOCALS.all[itemIndex]
+    const item = SAILS_LOCALS.all[itemIndex];
 
-    event.target.classList.add('is-loading')
-    event.target.disabled = true
+    event.target.classList.add('is-loading');
+    event.target.disabled = true;
 
     fetch(`/${model}/${item.id}`, {
         method: 'DELETE',
         headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/json'
-        }
+          Accept: 'application/json, text/plain, */*',
+          'Content-Type': 'application/json',
+        },
       })
       .then(response => {
         if (!response.ok) {
-          throw new Error()
+          throw new Error();
         }
-        notify('Model successfully deleted')
+        notify('Model successfully deleted');
       })
       .catch(err => {
-        notify('Can\'t delete model', false)
-        console.error(err)
+        notify("Can't delete model", false);
+        console.error(err);
       })
       .then(() => {
-        event.target.classList.remove('is-loading')
-        event.target.disabled = false
-      })
+        event.target.classList.remove('is-loading');
+        event.target.disabled = false;
+      });
   }
 
 </script>
