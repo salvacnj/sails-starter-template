@@ -29,3 +29,21 @@ Note:  Generators are usually run using the globally-installed `sails` CLI (comm
 
 
 # Generate new page
+
+``
+sails generate page articles
+``
+
+
+
+Generate model Uppercase singular
+``
+sails generate model Article
+``
+
+
+# Blueprint routes 
+
+Using prefix ``/api``. Example for List articles -> ``http://localhost:1337/api/articles``
+
+[Routes](https://sailsjs.com/documentation/concepts/blueprints/blueprint-routes)
