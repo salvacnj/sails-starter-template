@@ -19,11 +19,8 @@ module.exports = {
 
   fn: async function (inputs) {
     const model = this.req.param('model');
-    //console.log(sails.models.user.count());
-
-
-    const total = await Article.count()
-    const all = await Article.find({
+    const total = await sails.models[model].count()
+    const all = await sails.models[model].find({
       limit: 25
     })
 
@@ -34,6 +31,4 @@ module.exports = {
       total
     })
   }
-
-
 };

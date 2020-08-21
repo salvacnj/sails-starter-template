@@ -1,20 +1,27 @@
-<header id="page-header" class="navbar navbar-expand-sm navbar-dark bg-dark flex-column flex-md-row justify-content-between">
+<header id="page-header"
+  class="navbar navbar-expand-sm navbar-dark bg-dark flex-column flex-md-row justify-content-between">
   <a class="navbar-brand mr-0" href="/"><img class="logo" alt="NEW_APP_NAME logo" src="/images/logo.png" /></a>
   <div class="navbar-nav flex-row">
     <!-- LOGGED-IN NAVIGATION -->
-    <% if(me) { %>
-    <a class="nav-item nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/contact">Help</a>
-    <!-- Only in desktop nav -->
-    <div class="nav-item dropdown d-none d-sm-block">
-      <a class="nav-link dropdown-toggle" id="header-account-menu-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><%= __('Base de datos') %></a>
+    <% if(me) {
+      if (me.isSuperAdmin) { %>
+    <%##  ADMIN MENU START %>
+    <div class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" id="header-account-menu-link" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false"><%= __('Base de datos') %></a>
       <div class="dropdown-menu account-menu" aria-labelledby="header-account-menu-link">
         <% for (let model of Object.keys(sails.models).sort()) { %>
         <a class="dropdown-item" href="/admin/<%=model%>"><%= __(model) %></a>
         <% } %>
       </div>
     </div>
+    <%##  ADMIN MENU END %>
+    <%}%>
+    <a class="nav-item nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/contact">Help</a>
+    <!-- Only in desktop nav -->
     <div class="nav-item dropdown d-none d-sm-block">
-      <a class="nav-link dropdown-toggle" id="header-account-menu-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Account</a>
+      <a class="nav-link dropdown-toggle" id="header-account-menu-link" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false">Account</a>
       <div class="dropdown-menu account-menu" aria-labelledby="header-account-menu-link">
         <a class="dropdown-item" href="/account">Settings</a>
         <a class="dropdown-item" href="/logout">Sign out</a>

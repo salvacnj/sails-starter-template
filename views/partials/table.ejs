@@ -1,57 +1,72 @@
-<h1 class="title is-capitalized"><%= model %></h1>
+<div id="homepage" v-cloak>
+  <h1 class="title is-capitalized"><%= model %></h1>
 
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-sm btn-outline-info" data-toggle="modal" data-target="#exampleModalLong">
-  <%= __('Nueva entrada') %>
-</button>
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-sm btn-outline-info" data-toggle="modal" data-target="#newModal">
+    <%= __('Nueva entrada') %>
+  </button>
 
-<js-timestamp :at="1598013627260"></js-timestamp>
+  <input type="text" class="form-control" />
 
-<div class="table-container">
-  <table class="table is-hoverable is-fullwidth is-narrow">
-    <thead>
-      <tr>
-        <% for (let prop in all[0]) { %>
-        <th><%= prop %></th>
-        <% } %>
-        <th><%# Action buttons %></th>
-      </tr>
-    </thead>
+  <div class="table-container">
+    <i class="fab fa-500px"></i>
+    <table class="table is-hoverable is-fullwidth is-narrow">
+      <thead>
+        <tr>
+          <th>createdAt</th>
+          <th>updatedAt</th>
+          <% for (let prop in all[0]) { %> <% if (prop !== 'createdAt' && prop
+          !== 'updatedAt') { %>
+          <th><%= prop %></th>
+          <% } %> <% } %>
+          <th><%# Action buttons %></th>
+        </tr>
+      </thead>
 
-    <tbody>
-      <% all.forEach((item, index) => { %>
-      <tr class="is-relative">
-        <% for (let prop in item) {%>
-        <td><%= item[prop] %></td>
-        <% } %>
+      <tbody>
+        <% all.forEach((item, index) => { %>
+        <tr class="is-relative">
+          <td>
+            <js-timestamp :at="<%= item['createdAt'] %>"></js-timestamp>
+          </td>
+          <td>
+            <js-timestamp :at="<%= item['updatedAt'] %>"></js-timestamp>
+          </td>
+          <% delete item.createdAt; delete item.updatedAt; for (let prop in
+          item) {%>
+          <td><%= item[prop] %></td>
+          <% } %>
+          <td class="table__actions">
+            <button class="btn btn-outline-primary" onclick="openEditModal(<%= index %>)">
+              Edit
+            </button>
+            <button class="btn btn-outline-danger" onclick="destroy(<%= index %>)">
+              Delete
+            </button>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
 
-        <td class="table__actions">
-          <button class="btn btn-outline-primary" onclick="openEditModal(<%= index %>)">Edit</button>
-          <button class="btn btn-outline-danger" onclick="destroy(<%= index %>)">Delete</button>
-        </td>
-      </tr>
-      <% }) %>
-    </tbody>
-  </table>
-</div>
+  <h2 class="subtitle"><%= __('Número de entradas') %> <%= total %></h2>
 
-<h2 class="subtitle"><%= __('Número de entradas') %> <%= total %></h2>
-
-<!-- Modal -->
-<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
-  aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle"><%= __(`Crear ${model}`) %></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <% for (let name in attributes) {
-          const attribute = attributes[name]
-
+  <!-- Modal -->
+  <div class="modal fade" id="newModal" tabindex="-1" role="dialog" aria-labelledby="newModalTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="newModalTitle">
+            <%= __(`Crear ${model}`) %>
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <% for (let name in attributes) {
+          const attribute = attributes[name];
           // TODO: collections not supported yet
           if (attribute.collection) { continue }
 
@@ -68,32 +83,43 @@
             (attribute.autoMigrations && attribute.autoMigrations.autoIncrement) ||
             attribute.autoUpdatedAt ||
             attribute.autoCreatedAt %>
-        <div class="field is-horizontal">
-          <div class="field-label is-normal">
-            <label class="label"><%= name %></label>
-          </div>
-          <div class="field-body">
-            <div id="attribute-<%= name %>" class="field">
-              <div class="control">
-                <% if (attribute.model) { %>
-                <div class="dropdown autocomplete" data-model="<%= attribute.model %>">
-                  <div class="dropdown-trigger">
-                    <input name="<%= name %>" class="input" type="text" placeholder="" aria-haspopup="true" />
+          // TODO: collections not supported yet if (attribute.collection) {
+          continue } let type = 'text' let klass = 'input' if (attribute.type
+          === 'number') { type = 'number' } else if (attribute.type ===
+          'boolean') { type = 'checkbox' klass = 'checkbox' } const disabled =
+          (attribute.autoMigrations && attribute.autoMigrations.autoIncrement)
+          || attribute.autoUpdatedAt || attribute.autoCreatedAt %>
+          <div class="field is-horizontal">
+            <div class="field-label is-normal">
+              <label class="label"><%= name %></label>
+            </div>
+            <div class="field-body">
+              <div id="attribute-<%= name %>" class="field">
+                <div class="control">
+                  <% if (attribute.model) { %>
+                  <div class="dropdown autocomplete" data-model="<%= attribute.model %>">
+                    <div class="dropdown-trigger">
+                      <input name="<%= name %>" class="input" type="text" placeholder="" aria-haspopup="true" />
+                    </div>
+                    <div class="dropdown-menu" role="menu"></div>
                   </div>
-                  <div class="dropdown-menu" role="menu"></div>
+                  <% } else { %> <input class="<%= klass %>" type="<%= type %>" name="<%= name %>"
+                    <%= disabled ? 'disabled' : '' %>> <% } %>
                 </div>
-                <% } else { %> <input class="<%= klass %>" type="<%= type %>" name="<%= name %>"
-                  <%= disabled ? 'disabled' : '' %>> <% } %>
+                <p class="help"><%= attribute.required ? 'Required' : '' %></p>
               </div>
-              <p class="help"><%= attribute.required ? 'Required' : '' %></p>
             </div>
           </div>
+          <% } %>
         </div>
-        <% } %>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-outline-info" onclick="save(event)">Save changes</button>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+            Close
+          </button>
+          <button type="button" class="btn btn-outline-info" onclick="save(event)">
+            Save changes
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -122,30 +148,36 @@
     }
 
     for (let autocomplete of document.querySelectorAll('.autocomplete')) {
-      bulmahead(autocomplete.querySelector('input'), autocomplete.querySelector('.dropdown-menu'), v => {
-        return fetch(`/${autocomplete.dataset.model}?where={"name":{"contains":"${v}"}}&populate=false`)
-          .then(response => {
-            if (!response.ok) {
-              throw Error(response.statusText);
-            }
+      bulmahead(
+        autocomplete.querySelector('input'),
+        autocomplete.querySelector('.dropdown-menu'),
+        v => {
+          return fetch(
+              `/${autocomplete.dataset.model}?where={"name":{"contains":"${v}"}}&populate=false`,
+            )
+            .then(response => {
+              if (!response.ok) {
+                throw Error(response.statusText);
+              }
 
-            return response.json();
-          })
-          .then(json => {
-            return json.map(({
-              id,
-              name
-            }) => {
-              return {
-                label: name,
-                value: id,
-              };
+              return response.json();
+            })
+            .then(json => {
+              return json.map(({
+                id,
+                name
+              }) => {
+                return {
+                  label: name,
+                  value: id,
+                };
+              });
+            })
+            .catch(e => {
+              console.error("Can't search in autocomplete", e);
             });
-          })
-          .catch(e => {
-            console.error("Can't search in autocomplete", e);
-          });
-      });
+        },
+      );
     }
   }
 

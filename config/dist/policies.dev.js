@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * Policy Mappings
  * (sails.config.policies)
@@ -7,11 +9,8 @@
  * For more information on configuring policies, check out:
  * https://sailsjs.com/docs/concepts/policies
  */
-
 module.exports.policies = {
-
   '*': 'is-logged-in',
-
   // Bypass the `is-logged-in` policy for:
   'entrance/*': true,
   'account/logout': true,
@@ -21,9 +20,6 @@ module.exports.policies = {
   'legal/view-terms': true,
   'legal/view-privacy': true,
   'deliver-contact-form-message': true,
-
-
   // `is-super-admin` policy for:
   'admin/*': 'is-super-admin'
-
 };

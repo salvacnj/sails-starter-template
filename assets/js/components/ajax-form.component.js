@@ -5,6 +5,8 @@
  * > For example usage, take a look at one of the forms generated in a new
  * > Sails app when using the "Web app" template.
  *
+ * https://es.vuejs.org/v2/cookbook/form-validation.html
+ *
  * @type {Component}
  *
  * @slot default                     [form contents]
@@ -27,21 +29,21 @@ parasails.registerComponent('ajaxForm', {
   // For more info, see: https://vuejs.org/v2/guide/components.html#sync-Modifier
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   props: [
-    'syncing',// « 2-way bound (:syncing.sync="…")
-    'cloudError',// « 2-way bound (:cloud-error.sync="…")
+    'syncing', // « 2-way bound (:syncing.sync="…")
+    'cloudError', // « 2-way bound (:cloud-error.sync="…")
     'action',
-    'formErrors',// « 2-way bound (:form-errors.sync="…")
+    'formErrors', // « 2-way bound (:form-errors.sync="…")
     'formData',
     'formRules',
 
-    'handleSubmitting',// « alternative for `action`
-    'handleParsing',// « alternative for `formRules`+`formData`+`formErrors`
+    'handleSubmitting', // « alternative for `action`
+    'handleParsing', // « alternative for `formRules`+`formData`+`formErrors`
   ],
 
   //  ╦╔╗╔╦╔╦╗╦╔═╗╦    ╔═╗╔╦╗╔═╗╔╦╗╔═╗
   //  ║║║║║ ║ ║╠═╣║    ╚═╗ ║ ╠═╣ ║ ║╣
   //  ╩╝╚╝╩ ╩ ╩╩ ╩╩═╝  ╚═╝ ╩ ╩ ╩ ╩ ╚═╝
-  data: function (){
+  data: function () {
     return {
       //…
     };
@@ -59,10 +61,10 @@ parasails.registerComponent('ajaxForm', {
   //  ╦  ╦╔═╗╔═╗╔═╗╦ ╦╔═╗╦  ╔═╗
   //  ║  ║╠╣ ║╣ ║  ╚╦╝║  ║  ║╣
   //  ╩═╝╩╚  ╚═╝╚═╝ ╩ ╚═╝╩═╝╚═╝
-  beforeMount: function() {
+  beforeMount: function () {
     //…
   },
-  mounted: async function (){
+  mounted: async function () {
     if (this.action === undefined && this.handleSubmitting === undefined) {
       throw new Error('Neither `:action` nor `:handle-submitting` was passed in to <ajax-form>, but one or the other must be provided.');
     } else if (this.action !== undefined && this.handleSubmitting !== undefined) {
@@ -70,7 +72,7 @@ parasails.registerComponent('ajaxForm', {
     } else if (this.action !== undefined && (!_.isString(this.action) || !_.isFunction(Cloud[_.camelCase(this.action)]))) {
       throw new Error('Invalid `action` in <ajax-form>.  `action` should be the name of a method on the `Cloud` global.  For example: `action="login"` would make this form communicate using `Cloud.login()`, which corresponds to the "login" action on the server.');
     } else if (this.action !== undefined && !_.isFunction(Cloud[this.action])) {
-      throw new Error('Unrecognized `action` in <ajax-form>.  Did you mean to type `action="'+_.camelCase(this.action)+'"`?  (<ajax-form> expects `action` to be provided in camelCase format.  In other words, to reference the action at "api/controllers/foo/bar/do-something", use `action="doSomething"`.)');
+      throw new Error('Unrecognized `action` in <ajax-form>.  Did you mean to type `action="' + _.camelCase(this.action) + '"`?  (<ajax-form> expects `action` to be provided in camelCase format.  In other words, to reference the action at "api/controllers/foo/bar/do-something", use `action="doSomething"`.)');
     } else if (this.handleSubmitting !== undefined && !_.isFunction(this.handleSubmitting)) {
       throw new Error('Invalid `:handle-submitting` function passed to <ajax-form>.  (Any chance you forgot the ":" in front of the prop name?)  For example: `:handle-submitting="handleSubmittingSomeForm"`.  This function should be an `async function`, and it should either throw a special exit signal or return response data from the server.  (If this custom `handleSubmitting` will be doing something more complex than a single request to a server, feel free to return whatever amalgamation of data you wish.)');
     }
@@ -106,32 +108,32 @@ parasails.registerComponent('ajaxForm', {
             // logged sooner)
             // - - - - - - - - - - - - - - - - - - - - -
           } else {
-            let kebabRules = _.map(_.clone(SUPPORTED_RULES), (ruleName)=>_.kebabCase(ruleName));
-            let lowerCaseRules = _.map(_.clone(SUPPORTED_RULES), (ruleName)=>ruleName.toLowerCase());
+            let kebabRules = _.map(_.clone(SUPPORTED_RULES), (ruleName) => _.kebabCase(ruleName));
+            let lowerCaseRules = _.map(_.clone(SUPPORTED_RULES), (ruleName) => ruleName.toLowerCase());
             let ruleIdx = (
               _.indexOf(kebabRules, ruleName) === -1 ?
               _.indexOf(lowerCaseRules, ruleName.toLowerCase()) === -1 ?
-              -1
-              : _.indexOf(lowerCaseRules, ruleName.toLowerCase())
-              : _.indexOf(kebabRules, ruleName)
+              -1 :
+              _.indexOf(lowerCaseRules, ruleName.toLowerCase()) :
+              _.indexOf(kebabRules, ruleName)
             );
             if (ruleIdx !== -1) {
-              throw new Error('Did you mean `'+SUPPORTED_RULES[ruleIdx]+'`?  (note the capitalization)\nYou are seeing this error because <ajax-form> encountered an unsupported (but vaguely familiar-looking) client-side validation rule: `'+ruleName+'`.');
+              throw new Error('Did you mean `' + SUPPORTED_RULES[ruleIdx] + '`?  (note the capitalization)\nYou are seeing this error because <ajax-form> encountered an unsupported (but vaguely familiar-looking) client-side validation rule: `' + ruleName + '`.');
             } else {
-              throw new Error('<ajax-form> does not support that client-side validation rule (`'+ruleName+'`).\n [?] If you\'re unsure, visit https://sailsjs.com/support');
+              throw new Error('<ajax-form> does not support that client-side validation rule (`' + ruleName + '`).\n [?] If you\'re unsure, visit https://sailsjs.com/support');
             }
           }
-        }//∞
-      }//∞
+        } //∞
+      } //∞
     }
 
     // Focus our "focus-first" field, if relevant.
     // (but not on mobile, because it can get weird)
-    if(typeof bowser !== 'undefined' && !bowser.mobile && this.$find('[focus-first]').length > 0) {
+    if (typeof bowser !== 'undefined' && !bowser.mobile && this.$find('[focus-first]').length > 0) {
       this.$focus('[focus-first]');
     }
   },
-  beforeDestroy: function() {
+  beforeDestroy: function () {
     //…
   },
 
@@ -140,7 +142,7 @@ parasails.registerComponent('ajaxForm', {
   //  ╩╝╚╝ ╩ ╚═╝╩╚═╩ ╩╚═╝ ╩ ╩╚═╝╝╚╝╚═╝
   methods: {
 
-    keydownMetaEnter: async function() {
+    keydownMetaEnter: async function () {
       await this._submit();
     },
 
@@ -156,7 +158,7 @@ parasails.registerComponent('ajaxForm', {
       // Prevent double-posting.
       if (this.syncing) {
         return;
-      }//•
+      } //•
 
       // Clear the userland "cloudError" prop.
       this.$emit('update:cloudError', '');
@@ -175,7 +177,7 @@ parasails.registerComponent('ajaxForm', {
           return;
         } else if (!_.isObject(argins) || _.isArray(argins) || _.isFunction(argins)) {
           throw new Error('Invalid data returned from custom form parsing logic.  (Should return a dictionary of argins, like `{}`.)');
-        }//•
+        } //•
       } else if (this.formData) {
         // Or use the simpler, built-in absorbtion strategy.
         // > This uses the provided form data as our argins, verbatim.  Then it runs
@@ -284,7 +286,7 @@ parasails.registerComponent('ajaxForm', {
                 violation = true;
               }
             } else {
-              throw new Error('Cannot interpret client-side validation rule (`'+ruleName+'`) because the configuration provided for it is not recognized by <ajax-form>.\n [?] If you\'re unsure, visit https://sailsjs.com/support');
+              throw new Error('Cannot interpret client-side validation rule (`' + ruleName + '`) because the configuration provided for it is not recognized by <ajax-form>.\n [?] If you\'re unsure, visit https://sailsjs.com/support');
             }
 
             // If a rule violation was detected, then set it as a form error
@@ -293,10 +295,10 @@ parasails.registerComponent('ajaxForm', {
             if (violation) {
               formErrors[fieldName] = ruleName;
               break;
-            }//˚
+            } //˚
 
-          }//∞
-        }//∞
+          } //∞
+        } //∞
 
         // Whether there are any errors or not, update userland "formErrors" prop
         // so that the markup reflects the new reality (i.e. inline validation errors
@@ -310,10 +312,10 @@ parasails.registerComponent('ajaxForm', {
           // states/messages are not hooked up in the HTML template)
           if (this._environment !== 'production') {
             console.warn(`<ajax-form> encountered ${Object.keys(formErrors).length} form error${Object.keys(formErrors).length !== 1 ? 's' : ''} when performing client-side validation of "form-data" versus "form-rules".  (Note: This warning is only here to assist with debugging-- it will not be displayed in production.  If you're unsure, check out https://sailsjs.com/support for more resources.)`, _.cloneDeep(formErrors));
-          }//ﬁ
+          } //ﬁ
           return;
-        }//•
-      }//ﬁ  (determining argins)
+        } //•
+      } //ﬁ  (determining argins)
 
 
       // Set syncing state to `true` on userland "syncing" prop.
@@ -350,10 +352,10 @@ parasails.registerComponent('ajaxForm', {
         // Or better yet, just have `Cloud.*.with()` take care of that automatically.
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         result = await Cloud[this.action].with(argins)
-        .tolerate((err)=>{
-          rawErrorFromCloudSDK = err;
-          failedWithCloudExit = err.exit || 'error';
-        });
+          .tolerate((err) => {
+            rawErrorFromCloudSDK = err;
+            failedWithCloudExit = err.exit || 'error';
+          });
       }
 
 
