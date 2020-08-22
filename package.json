@@ -9,7 +9,6 @@
     "@sailshq/lodash": "^3.10.3",
     "@sailshq/socket.io-redis": "^5.2.0",
     "sails": "^1.2.4",
-    "sails-hook-admin-scr": "file:../../NAZARIES/npm-packages/sails-hook-admin-scr",
     "sails-hook-apianalytics": "^2.0.3",
     "sails-hook-autoreload": "^1.1.0",
     "sails-hook-organics": "^2.0.0",
@@ -23,7 +22,7 @@
     "grunt": "1.0.4",
     "htmlhint": "0.11.0",
     "lesshint": "6.3.6",
-    "sails-hook-grunt": "^4.0.0"
+    "sails-hook-grunt": "^4.0.1"
   },
   "scripts": {
     "start": "NODE_ENV=production node app.js",
